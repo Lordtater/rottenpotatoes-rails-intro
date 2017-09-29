@@ -1,4 +1,4 @@
-class MoviesController < ApplicationController
+class MoviesController < ApplicationController 
 
   def movie_params
     params.require(:movie).permit(:title, :rating, :description, :release_date)
@@ -11,7 +11,16 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+    if params[:sort_type] == nil
+      @movies = Movie.all
+    elsif params[:sort_type] == "title"
+      @movies = Movie.order("title")
+      @highlight = "title"
+    elsif params[:sort_type] == "date"
+      @movies = Movie.order("release_date")
+      @highlight = "date"
+    end
+    puts "TEST2"
   end
 
   def new
@@ -40,6 +49,11 @@ class MoviesController < ApplicationController
     @movie.destroy
     flash[:notice] = "Movie '#{@movie.title}' deleted."
     redirect_to movies_path
+  end
+  
+  def movies_title
+    @movies = Movie.order(:title) #need to get index to use this instead of .all
+    redirect_to sort_movies_title_path
   end
 
 end
