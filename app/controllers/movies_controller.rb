@@ -13,8 +13,12 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @checked_ratings = params[:ratings]
-    
+    if params[:ratings] == nil or params[:sort_type] == nil and session[:sort_type]
+      if params[:ratings] == nil then @rat = session[:ratings] else @rat = params[:ratings] end
+      if params[:sort_type] == nil and session[:sort_type] then @sort = session[:sort_type] else @sort = params[:sort_type] end
+      flash.keep
+      redirect_to movies_path({:sort_type => @sort, :ratings => @rat})
+    end
     if params[:sort_type] == nil and params[:ratings]
       @movies = Movie.where(:rating => params[:ratings].keys)
     elsif params[:sort_type] != nil and params[:ratings]
@@ -26,9 +30,9 @@ class MoviesController < ApplicationController
     end
     @highlight = params[:sort_type] if params[:sort_type] != nil
     @all_ratings = @movies.get_ratings
-    #@movies = Movie.filter()
-    puts "TEST2"
-    #puts @checked_ratings[1]
+    @checked_ratings = params[:ratings]  
+    session[:ratings] = if params[:ratings] != nil and params[:ratings].keys.size > 0 then params[:ratings] else session[:ratings] end
+    session[:sort_type] = if params[:sort_type] != nil then params[:sort_type] else nil end
   end
 
   def new
