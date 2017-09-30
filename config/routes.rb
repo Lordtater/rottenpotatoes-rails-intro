@@ -15,15 +15,6 @@ Rails.application.routes.draw do
   #   resources :products
 
   resources :movies
-  
-  get 'movies' => 'movies#movies_title', as: 'sort_movies_title'
-  
-  #get 'sortTitle' => 'movies'
-
-  
-  #get 'title' => 'movies#refresh', as: 'title'
-  
-
 
   # Example resource route with options:
   #   resources :products do

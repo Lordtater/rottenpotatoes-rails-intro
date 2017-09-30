@@ -1,4 +1,6 @@
 class MoviesController < ApplicationController 
+  
+  
 
   def movie_params
     params.require(:movie).permit(:title, :rating, :description, :release_date)
@@ -11,16 +13,22 @@ class MoviesController < ApplicationController
   end
 
   def index
-    if params[:sort_type] == nil
+    @checked_ratings = params[:ratings]
+    
+    if params[:sort_type] == nil and params[:ratings]
+      @movies = Movie.where(:rating => params[:ratings].keys)
+    elsif params[:sort_type] != nil and params[:ratings]
+      @movies = Movie.where(:rating => params[:ratings].keys).order(params[:sort_type])
+    elsif params[:sort_type] != nil
+      @movies = Movie.order(params[:sort_type])
+    else
       @movies = Movie.all
-    elsif params[:sort_type] == "title"
-      @movies = Movie.order("title")
-      @highlight = "title"
-    elsif params[:sort_type] == "date"
-      @movies = Movie.order("release_date")
-      @highlight = "date"
     end
+    @highlight = params[:sort_type] if params[:sort_type] != nil
+    @all_ratings = @movies.get_ratings
+    #@movies = Movie.filter()
     puts "TEST2"
+    #puts @checked_ratings[1]
   end
 
   def new
@@ -55,5 +63,6 @@ class MoviesController < ApplicationController
     @movies = Movie.order(:title) #need to get index to use this instead of .all
     redirect_to sort_movies_title_path
   end
+  
 
 end
