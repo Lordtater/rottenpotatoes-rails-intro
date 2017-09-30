@@ -13,7 +13,7 @@ class MoviesController < ApplicationController
   end
 
   def index
-    if params[:ratings] == nil or params[:sort_type] == nil and session[:sort_type]
+    if params[:ratings] == nil or (params[:sort_type] == nil and session[:sort_type])
       if params[:ratings] == nil then @rat = session[:ratings] else @rat = params[:ratings] end
       if params[:sort_type] == nil and session[:sort_type] then @sort = session[:sort_type] else @sort = params[:sort_type] end
       flash.keep
